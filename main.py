@@ -17,20 +17,30 @@ def index():
 @app.route('/cars', methods=['GET', 'POST'])
 def show_cars():
   if request.method == 'POST':
-    brand = request.form['brand']
-    # print(brand)
+    brand = request.form.get('brand', '').strip()
+
+    if brand == '':
+      return render_template(
+        'cars/cars.html',
+        title='Show All Cars Page',
+        cars=cars
+      )
     tmp_cars = []
     for car in cars:
-      # print(car)
-      if brand in car['brand']:
+      if brand.lower() in car['brand'].lower():
         tmp_cars.append(car)
-    return render_template('cars/cars.html',
-                         title='Show Cars by Brand Page',
-                         cars=tmp_cars)
-  
-  return render_template('cars/cars.html',
-                         title='Show All Cars Page',
-                         cars=cars)
+
+    return render_template(
+      'cars/cars.html',
+      title='Show Cars by Brand Page',
+      cars=tmp_cars
+    )
+
+  return render_template(
+    'cars/cars.html',
+    title='Show All Cars Page',
+    cars=cars
+  )
 
 @app.route('/cars/new', methods=['GET', 'POST'])
 def new_car():
